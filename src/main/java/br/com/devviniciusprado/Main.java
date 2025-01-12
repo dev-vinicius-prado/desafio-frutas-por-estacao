@@ -1,16 +1,20 @@
 package br.com.devviniciusprado;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.Normalizer;
 import java.util.*;
 
+import static java.text.Normalizer.Form.NFD;
 import static java.util.Objects.isNull;
 
 public class Main {
     public static void main(String[] args) {
-        var scanner = new Scanner(System.in);
+        var scanner = new Scanner(new InputStreamReader(System.in, StandardCharsets.UTF_8));
         System.out.println("Digite a lista de frutas separadas por espaco:");
 
         final String frutas = scanner.nextLine();
@@ -28,8 +32,16 @@ public class Main {
     private static List<String> processarEntradaDoUsuario(String frutas) {
         String[] arrayFrutas = frutas.replaceAll(",", " ").split(" ");
         return Arrays.stream(arrayFrutas)
+                .filter(Objects::nonNull)
                 .map(String::trim)
+                .map(String::toLowerCase)
+                .map(Main::normalizarEntrada)
                 .toList();
+    }
+
+    private static String normalizarEntrada(String entrada) {
+        String entradaNormalizada = Normalizer.normalize(entrada, NFD);
+        return entradaNormalizada.replaceAll("\\p{M}", "");
     }
 
     private static Map<String, Collection<String>> classificar(List<String> listaFrutas) {
@@ -38,38 +50,39 @@ public class Main {
             List<String> frutasPorEstacao = Files.readAllLines(path);
             Map<String, Collection<String>> mapaFrutasPorEstacao = new HashMap<>();
             Map<String, Collection<String>> frutasClassificadasPorEstacao = new HashMap<>();
-            frutasPorEstacao.forEach(linha -> {
-                final String[] split = linha.split(",");
-                final String estacao = split[0];
-                final String fruta = split[1];
+            frutasPorEstacao.stream()
+                    .map(String::toLowerCase)
+                    .forEach(linha -> {
+                        final String[] split = linha.split(",");
+                        final String estacao = split[0];
+                        final String fruta = split[1];
 
-                if (mapaFrutasPorEstacao.get(estacao) == null) {
-                    List<String> frutas = new ArrayList<>();
-                    frutas.add(fruta);
-                    mapaFrutasPorEstacao.put(estacao, frutas);
-                } else {
-                    Collection<String> frutas = mapaFrutasPorEstacao.get(estacao);
-                    frutas.add(fruta);
-                    mapaFrutasPorEstacao.put(estacao, frutas);
-                }
-            });
+                        if (mapaFrutasPorEstacao.get(estacao) == null) {
+                            List<String> frutas = new ArrayList<>();
+                            frutas.add(fruta);
+                            mapaFrutasPorEstacao.put(estacao, frutas);
+                        } else {
+                            Collection<String> frutas = mapaFrutasPorEstacao.get(estacao);
+                            frutas.add(fruta);
+                            mapaFrutasPorEstacao.put(estacao, frutas);
+                        }
+                    });
 
             listaFrutas.forEach(fruta ->
-                mapaFrutasPorEstacao.keySet()
-                        .forEach(estacao -> {
-                            if (mapaFrutasPorEstacao.get(estacao)
-                                    .stream().map(String::toLowerCase).toList().contains(fruta.toLowerCase())) {
-                                if (frutasClassificadasPorEstacao.get(estacao) == null) {
-                                    List<String> frutas = new ArrayList<>();
-                                    frutas.add(fruta);
-                                    frutasClassificadasPorEstacao.put(estacao, frutas);
-                                } else {
-                                    Collection<String> frutas = frutasClassificadasPorEstacao.get(estacao);
-                                    frutas.add(fruta);
-                                    frutasClassificadasPorEstacao.put(estacao, frutas);
+                    mapaFrutasPorEstacao.keySet()
+                            .forEach(estacao -> {
+                                if (mapaFrutasPorEstacao.get(estacao).contains(fruta)) {
+                                    if (frutasClassificadasPorEstacao.get(estacao) == null) {
+                                        List<String> frutas = new ArrayList<>();
+                                        frutas.add(fruta);
+                                        frutasClassificadasPorEstacao.put(estacao, frutas);
+                                    } else {
+                                        Collection<String> frutas = frutasClassificadasPorEstacao.get(estacao);
+                                        frutas.add(fruta);
+                                        frutasClassificadasPorEstacao.put(estacao, frutas);
+                                    }
                                 }
-                            }
-                        })
+                            })
             );
             return frutasClassificadasPorEstacao;
         } catch (IOException e) {

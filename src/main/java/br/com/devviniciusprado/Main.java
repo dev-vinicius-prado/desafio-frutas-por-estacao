@@ -24,13 +24,13 @@ public class Main {
 
         List<String> listaFrutas = processarEntradaDoUsuario(frutas);
 
-        Map<String, Collection<String>> frutasPorEstacao = classificar(listaFrutas);
+        Map<String, Collection<String>> frutasPorEstacao = classificarFrutas(listaFrutas);
         System.out.println("::Frutas por estação::");
         System.out.println(frutasPorEstacao);
     }
 
     private static List<String> processarEntradaDoUsuario(String frutas) {
-        String[] arrayFrutas = frutas.replaceAll(",", " ").split(" ");
+        final String[] arrayFrutas = frutas.replaceAll(",", " ").split(" ");
         return Arrays.stream(arrayFrutas)
                 .filter(Objects::nonNull)
                 .map(String::trim)
@@ -44,49 +44,55 @@ public class Main {
         return entradaNormalizada.replaceAll("\\p{M}", "");
     }
 
-    private static Map<String, Collection<String>> classificar(List<String> listaFrutas) {
-        final Path path = Paths.get("src/main/resources/frutas_por_estacao.csv");
-        try {
-            List<String> frutasPorEstacao = Files.readAllLines(path);
-            Map<String, Collection<String>> mapaFrutasPorEstacao = new HashMap<>();
-            Map<String, Collection<String>> frutasClassificadasPorEstacao = new HashMap<>();
-            frutasPorEstacao.stream()
-                    .map(String::toLowerCase)
-                    .forEach(linha -> {
-                        final String[] split = linha.split(",");
-                        final String estacao = split[0];
-                        final String fruta = split[1];
-
-                        if (mapaFrutasPorEstacao.get(estacao) == null) {
-                            List<String> frutas = new ArrayList<>();
-                            frutas.add(fruta);
-                            mapaFrutasPorEstacao.put(estacao, frutas);
-                        } else {
-                            Collection<String> frutas = mapaFrutasPorEstacao.get(estacao);
-                            frutas.add(fruta);
-                            mapaFrutasPorEstacao.put(estacao, frutas);
-                        }
-                    });
-
-            listaFrutas.forEach(fruta ->
-                    mapaFrutasPorEstacao.keySet()
-                            .forEach(estacao -> {
-                                if (mapaFrutasPorEstacao.get(estacao).contains(fruta)) {
-                                    if (frutasClassificadasPorEstacao.get(estacao) == null) {
-                                        List<String> frutas = new ArrayList<>();
-                                        frutas.add(fruta);
-                                        frutasClassificadasPorEstacao.put(estacao, frutas);
-                                    } else {
-                                        Collection<String> frutas = frutasClassificadasPorEstacao.get(estacao);
-                                        frutas.add(fruta);
-                                        frutasClassificadasPorEstacao.put(estacao, frutas);
-                                    }
+    private static Map<String, Collection<String>> classificarFrutas(List<String> listaFrutas) {
+        Map<String, Collection<String>> mapaFrutasPorEstacao = criarMapaFrutasPorEstacao();
+        Map<String, Collection<String>> frutasClassificadasPorEstacao = new HashMap<>();
+        listaFrutas.forEach(fruta ->
+                mapaFrutasPorEstacao.keySet()
+                        .forEach(estacao -> {
+                            if (mapaFrutasPorEstacao.get(estacao).contains(fruta)) {
+                                if (frutasClassificadasPorEstacao.get(estacao) == null) {
+                                    List<String> frutas = new ArrayList<>();
+                                    frutas.add(fruta);
+                                    frutasClassificadasPorEstacao.put(estacao, frutas);
+                                } else {
+                                    Collection<String> frutas = frutasClassificadasPorEstacao.get(estacao);
+                                    frutas.add(fruta);
+                                    frutasClassificadasPorEstacao.put(estacao, frutas);
                                 }
-                            })
-            );
-            return frutasClassificadasPorEstacao;
+                            }
+                        })
+        );
+        return frutasClassificadasPorEstacao;
+    }
+
+    private static Map<String, Collection<String>> criarMapaFrutasPorEstacao() {
+        final Path path = Paths.get("src/main/resources/frutas_por_estacao.csv");
+        List<String> frutasPorEstacao;
+        try {
+            frutasPorEstacao = Files.readAllLines(path);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(String.format("Não foi possível abrir o arquivo %s. Tente novamente.", path.getFileName()));
         }
+        Map<String, Collection<String>> mapaFrutasPorEstacao = new HashMap<>();
+        frutasPorEstacao.stream()
+                .map(String::toLowerCase)
+                .forEach(linha -> {
+                    final String[] split = linha.split(",");
+                    final String estacao = split[0];
+                    final String fruta = split[1];
+
+                    if (mapaFrutasPorEstacao.get(estacao) == null) {
+                        List<String> frutas = new ArrayList<>();
+                        frutas.add(fruta);
+                        mapaFrutasPorEstacao.put(estacao, frutas);
+                    } else {
+                        Collection<String> frutas = mapaFrutasPorEstacao.get(estacao);
+                        frutas.add(fruta);
+                        mapaFrutasPorEstacao.put(estacao, frutas);
+                    }
+                });
+
+        return mapaFrutasPorEstacao;
     }
 }

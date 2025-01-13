@@ -27,7 +27,7 @@ public class Main {
         formatarSaida(frutasPorEstacao);
     }
 
-    private static List<String> processarEntradaDoUsuario(String frutas) {
+    protected static List<String> processarEntradaDoUsuario(String frutas) {
         final String[] arrayFrutas = frutas.replaceAll(",", " ").split(" ");
         return Arrays.stream(arrayFrutas)
                 .filter(Objects::nonNull)
@@ -37,12 +37,12 @@ public class Main {
                 .toList();
     }
 
-    private static String normalizarEntrada(String entrada) {
+    protected static String normalizarEntrada(String entrada) {
         String entradaNormalizada = Normalizer.normalize(entrada, NFD);
         return entradaNormalizada.replaceAll("\\p{M}", "");
     }
 
-    private static Map<String, Collection<String>> classificarFrutas(List<String> listaFrutas) {
+    protected static Map<String, Collection<String>> classificarFrutas(List<String> listaFrutas) {
         Map<String, Collection<String>> mapaFrutasPorEstacao = criarMapaFrutasPorEstacao();
         Map<String, Collection<String>> frutasClassificadasPorEstacao = new HashMap<>();
         listaFrutas.forEach(fruta ->
@@ -64,7 +64,7 @@ public class Main {
         return frutasClassificadasPorEstacao;
     }
 
-    private static Map<String, Collection<String>> criarMapaFrutasPorEstacao() {
+    protected static Map<String, Collection<String>> criarMapaFrutasPorEstacao() {
         final Path path = Paths.get("src/main/resources/frutas_por_estacao.csv");
         List<String> frutasPorEstacao;
         try {

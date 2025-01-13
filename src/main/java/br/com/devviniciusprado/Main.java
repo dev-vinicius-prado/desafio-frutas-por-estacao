@@ -19,14 +19,12 @@ public class Main {
 
         final String frutas = scanner.nextLine();
         if (isNull(frutas) || frutas.trim().isEmpty()) {
-            throw new IllegalArgumentException("Informe pelo menos 1 fruta");
+            throw new IllegalArgumentException("Informe pelo menos 1 fruta!");
         }
-
         List<String> listaFrutas = processarEntradaDoUsuario(frutas);
 
         Map<String, Collection<String>> frutasPorEstacao = classificarFrutas(listaFrutas);
-        System.out.println("::Frutas por estação::");
-        System.out.println(frutasPorEstacao);
+        formatarSaida(frutasPorEstacao);
     }
 
     private static List<String> processarEntradaDoUsuario(String frutas) {
@@ -94,5 +92,17 @@ public class Main {
                 });
 
         return mapaFrutasPorEstacao;
+    }
+
+    private static void formatarSaida(Map<String, Collection<String>> frutasPorEstacao) {
+        System.out.println("::Frutas por estação::");
+        System.out.println("{ ");
+        frutasPorEstacao.keySet()
+                .forEach(estacao -> {
+                            System.out.print(estacao + " = ");
+                            System.out.println(frutasPorEstacao.get(estacao));
+                        }
+                );
+        System.out.print("} ");
     }
 }

@@ -1,41 +1,43 @@
 # 🤧 Bora codar? Desafio técnico divertido na área! 🚀
 
-Fala, devs! 👋 Já imaginou criar algo simples, mas super útil? Aqui vai um desafio que mistura lógica, organização e... frutas! 🍉🍊
+Fala, devs! 👋 Aqui vai minha solução para o desafio. 🍉🍊
 
 ## **O desafio:**
 
 Implemente uma função/método que receba uma lista de frutas e devolva um mapa com as frutas separadas por estação do ano. Simples, mas cheio de possibilidades!
 
-### 💡 **Por onde começar?**
+---
 
-- Você tem uma lista de frutas: `[manga, abacaxi, laranja, uva, etc.]`
-- Sua missão: organizar essas frutas por estação do ano (`verão`, `outono`, `inverno`, `primavera`).
-- Retorne um mapa/dicionário/objeto (dependendo da linguagem que você preferir) com as frutas separadas direitinho por estação.
+## Exemplo de Entrada e Saída 📥📤
 
-### **Exemplo de saída:**
+### Entrada:
+O programa solicita ao usuário uma lista de frutas separadas por espaço, como:
+```
+manga uva abacaxi
+```
 
-```json
-{
-  "verao": ["manga", "abacaxi", "melancia"],
-  "inverno": ["laranja", "abacate"],
-  "primavera": ["uva", "mamão"],
-  "outono": ["caqui", "goiaba"]
+### Saída:
+Com base no processamento, a saída pode ser algo como:
+```
+::Frutas por estação::
+{ 
+verão = [manga, abacaxi]
+outono = [uva]
 }
 ```
 
-### 🎯 **O objetivo?**
+---
 
-Colocar a lógica em prática, explorar estruturas de dados e, quem sabe, até descobrir maneiras criativas de resolver o problema.
+### 🎯 **Metodologia aplicada**
 
-### 🚨 **Valendo pontos extras:**
+Entendendo o problema sugerido, pensei inicialmente em definir quais frutas fazem parte de qual estação, criando um arquivo CSV como fonte de dados.
+Em seguida, implementei a lógica para extrair os dados do arquivo CSV e criar um objeto MAP com os dados classificados.
+Com isso, pude explorar a estrutura de dados MAP e seus métodos. 
 
-- Teste seu código com listas diferentes!
-- Use a linguagem que quiser.
-- Compartilhe sua solução nos comentários e troque ideias com outros devs!
+Depois, pensei na entrada de dados do usuário e quais validações seriam importantes para o melhor funcionamento do programa.
+Apliquei alguns conceitos de organização de código, criando variáveis e métodos com nomes significativos e colocandos os métodos em uma ordem para facilitar a leitura do código.
 
-## 🌟 **Se joga no desafio e mostre sua habilidade!**
-
-Quem aceita essa missão? 🕵️‍♂️🔥
+Por fim, implementei testes unitários para garantir o funcionamento do código e melhorar a implementação, refatorando alguns pontos.
 
 ---
 

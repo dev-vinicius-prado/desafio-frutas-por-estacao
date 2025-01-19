@@ -18,13 +18,17 @@ public class Main {
         System.out.println("Digite a lista de frutas separadas por espaco:");
 
         final String frutas = scanner.nextLine();
-        if (isNull(frutas) || frutas.trim().isEmpty()) {
-            throw new IllegalArgumentException("Informe pelo menos 1 fruta!");
-        }
+        validarEntrada(frutas);
         List<String> listaFrutas = processarEntradaDoUsuario(frutas);
 
         Map<String, Collection<String>> frutasPorEstacao = classificarFrutas(listaFrutas);
         formatarSaida(frutasPorEstacao);
+    }
+
+    protected static void validarEntrada(String frutas) {
+        if (isNull(frutas) || frutas.trim().isEmpty()) {
+            throw new IllegalArgumentException("Informe pelo menos 1 fruta!");
+        }
     }
 
     protected static List<String> processarEntradaDoUsuario(String frutas) {

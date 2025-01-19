@@ -46,4 +46,22 @@ class MainTest {
         assertEquals(quantidadeEstacoesEsperadas, resultado.size());
         assertTrue(resultado.get("verão").contains("melancia"), "A estação 'Verão' deve a fruta 'Melancia'.");
     }
+
+    @Test
+    void deveAceitarEntrada() {
+        assertDoesNotThrow(() -> Main.validarEntrada("manga banana uva"));
+    }
+
+    @Test
+    void deveLancarExcecaoQuandoEntradaVazia() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> Main.validarEntrada(""));
+        assertEquals("Informe pelo menos 1 fruta!", exception.getMessage());
+    }
+    @Test
+    void deveLancarExcecaoQuandoEntradaNula() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> Main.validarEntrada(null));
+        assertEquals("Informe pelo menos 1 fruta!", exception.getMessage());
+    }
 }
